@@ -15,4 +15,13 @@ def svm_loss(x, y):
 
 
 def softmax_loss(x, y):
-    pass
+    normal_shift = x - np.max(x, axis=1, keepdims=True)
+    log_probs = normal_shift - np.log(np.sum(normal_shift, axis=1, keepdims=True))
+    probs = np.exp(log_probs)
+    N = x.shape[0]
+    loss = -np.sum(log_probs[np.arange(N), y]) / N
+    dx = probs
+    dx[np.arange(N), y] -= 1
+    dx /= N
+    return loss, dx
+
