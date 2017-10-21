@@ -34,6 +34,20 @@ def relu_backward(dout, cache):
     return dx
 
 
+def weak_relu_forward(x, r):
+    out = np.maximum(0, x)
+    cache = (x, r)
+    out[x <= 0] = r * x[x <= 0]
+    return out, cache
+
+
+def weak_relu_backward(dout, cache):
+    x, r = cache
+    dx = dout.copy()
+    dx[dx <= 0] = r * dx[dx <= 0]
+    return dx
+
+
 def affine_relu_forward(x, w, b):
     temp_out, affine_cache = affine_forward(x, w, b)
     out, relu_cache = relu_forward(temp_out)

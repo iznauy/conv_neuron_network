@@ -1,10 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="yuan">
     <words>
+      <w>adagrad</w>
       <w>dout</w>
       <w>dtemp</w>
       <w>probs</w>
       <w>relu</w>
+      <w>rmsprop</w>
       <w>softmax</w>
     </words>
   </dictionary>
