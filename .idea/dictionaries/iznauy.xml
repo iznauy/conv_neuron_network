@@ -5,6 +5,7 @@
       <w>dbeta</w>
       <w>dgamma</w>
       <w>dtype</w>
+      <w>logits</w>
       <w>lossfunc</w>
       <w>optim</w>
     </words>

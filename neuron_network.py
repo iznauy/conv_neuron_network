@@ -34,11 +34,46 @@ class Neuron_network(object):
         if seed:
             np.random.seed(seed)
 
+    def train(self, x, y):
+        return self._loss(x, y)
+
+    def predict(self, x):
+        scores = self._loss(x)
+        return np.argmax(scores, axis=1)
+
+    def _loss(self, x, y=None):
+
+        mode = 'test' if y is None else 'train'
+
+        for layer in self.layers:
+            x = layer.forward(x)
+        scores = x
+
+        if mode == 'test':
+            return scores
+
+        loss, dout = self.loss.loss(scores, y)
+        for i in range(len(self.layers) - 1, -1, -1):
+            dout = self.layers[i].backward(dout)\
+
+        return loss
+
+
 
 if __name__ == '__main__':
     hlc = []
     hlc1 = {'input_dim': 1000, 'output_dim': 100, 'layer': Affine_layer}
-    hlc2 = {'input_dim': 120, 'output_dim': 120, 'layer': Relu_layer}
+    hlc2 = {'input_dim': 100, 'output_dim': 100, 'layer': Relu_layer}
+    hlc3 = {'input_dim': 100, 'output_dim': 10, 'layer': Affine_layer}
+    hlc4 = {'input_dim': 10, 'output_dim': 10, 'layer': Relu_layer}
     hlc.append(hlc1)
     hlc.append(hlc2)
-    Neuron_network(hlc, 10)
+    hlc.append(hlc3)
+    hlc.append(hlc4)
+    model = Neuron_network(hlc, 10, learning_rate=100)
+    input_data = np.random.rand(10000, 1000)
+    output_data = np.random.rand(10000, 10)
+    x = input_data
+    y = np.argmax(output_data, axis=1)
+    for i in range(100):
+        print model.train(x, y)

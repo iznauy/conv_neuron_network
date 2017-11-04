@@ -34,7 +34,7 @@ class Affine_layer(Layer):
         return out
 
     def backward(self, dout):
-        dx = dout.dot(self.cache['x'].T)
+        dx = dout.dot(self.w.T)
         self.grad['w'] = self.cache['x'].T.dot(dout)
         self.grad['b'] = np.sum(dout, axis=0)
         self._update()
@@ -57,7 +57,8 @@ class Relu_layer(Layer):
         return out
 
     def backward(self, dout):
-        dx = dout[self.cache['x'] <= 0] = 0
+        dx = np.copy(dout)
+        dx[self.cache['x'] <= 0] = 0
         return dx
 
     def _update(self):
