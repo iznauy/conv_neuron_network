@@ -1,63 +1,65 @@
 import numpy as np
 
 
-def affine_forward(x, w, b):
-    N = x.shape[0]
-    D = x.size / N
-    x_vec = x.reshape((N, D))
-    out = x_vec.dot(w) + b
-    cache = (x, w, b)
-    return out, cache
+class Layer(object):
+
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate, config=None):
+        self.dim_in = dim_in
+        self.dim_out = dim_out
+        self.weight_scale = weight_scale
+        self.learning_rate = learning_rate
+        self.cache = {}
+        self.grad = {}
+
+    def forward(self, x):
+        raise TypeError("method 'forward' has not implemented!")
+
+    def backward(self, dout):
+        raise TypeError("method 'forward' has not implemented!")
+
+    def _update(self):
+        raise TypeError("method '_update' has not implemented!")
 
 
-def affine_backward(dout, cache):
-    x, w, b = cache
-    N = x.shape[0]
-    D = x.size / N
-    x_vec = x.reshape((N, D))
-    dx = np.dot(dout, w.T)
-    dw = np.dot(x_vec.T, dout)
-    db = np.sum(dout, axis=0)
-    return dx, dw, db
+class Affine_layer(Layer):
+
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate):
+        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate)
+        self.w = np.random.randn(dim_in, dim_out) * weight_scale
+        self.b = np.zeros(dim_out)
+
+    def forward(self, x):
+        out = x.dot(self.w) + self.b
+        self.cache['x'] = x
+        return out
+
+    def backward(self, dout):
+        dx = dout.dot(self.cache['x'].T)
+        self.grad['w'] = self.cache['x'].T.dot(dout)
+        self.grad['b'] = np.sum(dout, axis=0)
+        self._update()
+        return dx
+
+    def _update(self):
+        self.w -= self.learning_rate * self.grad['w']
+        self.b -= self.learning_rate * self.grad['b']
 
 
-def relu_forward(x):
-    out = np.maximum(0, x)
-    cache = x
-    return out, cache
+class Relu_layer(Layer):
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate):
+        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate)
+        if dim_in != dim_out:
+            raise ValueError("In relu layer, the input dimension must equals the output dimension!")
 
+    def forward(self, x):
+        self.cache['x'] = x
+        out = np.maximum(0, x)
+        return out
 
-def relu_backward(dout, cache):
-    x = cache
-    dx = dout.copy()
-    dx[x <= 0] = 0
-    return dx
+    def backward(self, dout):
+        dx = dout[self.cache['x'] <= 0] = 0
+        return dx
 
-
-def weak_relu_forward(x, r):
-    out = np.maximum(0, x)
-    cache = (x, r)
-    out[x <= 0] = r * x[x <= 0]
-    return out, cache
-
-
-def weak_relu_backward(dout, cache):
-    x, r = cache
-    dx = dout.copy()
-    dx[dx <= 0] = r * dx[dx <= 0]
-    return dx
-
-
-def affine_relu_forward(x, w, b):
-    temp_out, affine_cache = affine_forward(x, w, b)
-    out, relu_cache = relu_forward(temp_out)
-    cache = (affine_cache, relu_cache)
-    return out, cache
-
-
-def affine_relu_backward(dout, cache):
-    affine_cache, relu_cache = cache
-    dtemp = relu_backward(dout, relu_cache)
-    dx, dw, db = affine_backward(dtemp, affine_cache)
-    return dx, dw, db
+    def _update(self):
+        pass
 
