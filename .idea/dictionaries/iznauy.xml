@@ -2,12 +2,14 @@
   <dictionary name="iznauy">
     <words>
       <w>batchnorm</w>
+      <w>convolutional</w>
       <w>dbeta</w>
       <w>dgamma</w>
       <w>dtype</w>
       <w>logits</w>
       <w>lossfunc</w>
       <w>optim</w>
+      <w>stds</w>
     </words>
   </dictionary>
 </component>

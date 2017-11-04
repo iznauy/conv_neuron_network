@@ -3,11 +3,12 @@ import numpy as np
 
 class Layer(object):
 
-    def __init__(self, dim_in, dim_out, weight_scale, learning_rate, config=None):
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate, reg, config=None):
         self.dim_in = dim_in
         self.dim_out = dim_out
         self.weight_scale = weight_scale
         self.learning_rate = learning_rate
+        self.reg = reg
         self.cache = {}
         self.grad = {}
 
@@ -23,8 +24,8 @@ class Layer(object):
 
 class Affine_layer(Layer):
 
-    def __init__(self, dim_in, dim_out, weight_scale, learning_rate):
-        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate)
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate, reg):
+        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate, reg)
         self.w = np.random.randn(dim_in, dim_out) * weight_scale
         self.b = np.zeros(dim_out)
 
@@ -35,7 +36,7 @@ class Affine_layer(Layer):
 
     def backward(self, dout):
         dx = dout.dot(self.w.T)
-        self.grad['w'] = self.cache['x'].T.dot(dout)
+        self.grad['w'] = self.cache['x'].T.dot(dout) + self.w * self.reg
         self.grad['b'] = np.sum(dout, axis=0)
         self._update()
         return dx
@@ -46,8 +47,8 @@ class Affine_layer(Layer):
 
 
 class Relu_layer(Layer):
-    def __init__(self, dim_in, dim_out, weight_scale, learning_rate):
-        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate)
+    def __init__(self, dim_in, dim_out, weight_scale, learning_rate, reg):
+        Layer.__init__(self, dim_in, dim_out, weight_scale, learning_rate, reg)
         if dim_in != dim_out:
             raise ValueError("In relu layer, the input dimension must equals the output dimension!")
 
