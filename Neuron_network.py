@@ -1,5 +1,5 @@
-from loss_functions import *
-from layers import *
+from Loss import *
+from Layers import *
 
 class Neuron_network(object):
 
@@ -57,23 +57,3 @@ class Neuron_network(object):
             dout = self.layers[i].backward(dout)\
 
         return loss
-
-
-
-if __name__ == '__main__':
-    hlc = []
-    hlc1 = {'input_dim': 1000, 'output_dim': 100, 'layer': Affine_layer}
-    hlc2 = {'input_dim': 100, 'output_dim': 100, 'layer': Relu_layer}
-    hlc3 = {'input_dim': 100, 'output_dim': 10, 'layer': Affine_layer}
-    hlc4 = {'input_dim': 10, 'output_dim': 10, 'layer': Relu_layer}
-    hlc.append(hlc1)
-    hlc.append(hlc2)
-    hlc.append(hlc3)
-    hlc.append(hlc4)
-    model = Neuron_network(hlc, 10, learning_rate=100)
-    input_data = np.random.rand(10000, 1000)
-    output_data = np.random.rand(10000, 10)
-    x = input_data
-    y = np.argmax(output_data, axis=1)
-    for i in range(100):
-        print model.train(x, y)
