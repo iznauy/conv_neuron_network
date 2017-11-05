@@ -24,13 +24,13 @@ if __name__ == '__main__':
     layers.append(layers1)
     layers.append(layers2)
 
-    model = Neuron_network(layers, 10, learning_rate=0.5, weight_scale=1e-3)
-    for i in range(3000):
+    model = Neuron_network(layers, 10)
+    for i in range(2000):
         mini_batch_index = np.random.randint(0, 9000, 100)
         mini_batch_in = train_in[mini_batch_index]
         mini_batch_labels = train_labels[mini_batch_index]
         loss = model.train(mini_batch_in, mini_batch_labels)
-        if i % 100 == 0 or i == 5999:
+        if i % 100 == 0 or i == 1999:
             print i, " ", loss
 
     print 'In predict ', np.sum((model.predict(val_in) == val_labels)) * 1.0 / val_labels.shape[0]
