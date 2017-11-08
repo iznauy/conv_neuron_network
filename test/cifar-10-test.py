@@ -22,15 +22,21 @@ if __name__ == '__main__':
     val_labels = np.array(data['labels'][9000:])
     layers = []
     layers1 = {'input_dim': 3072, 'output_dim': 1000, 'layer': Affine_layer}
-    layers_bn = {'input_dim': 1000, 'output_dim': 1000, 'layer': BatchNorm_layer}
+    layers_bn1 = {'input_dim': 1000, 'output_dim': 1000, 'layer': BatchNorm_layer}
     layers2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': ReLU_layer}
+    layers_dp1 = {'input_dim': 1000, 'output_dim': 1000, 'layer': Dropout_layer}
     layers3 = {'input_dim': 1000, 'output_dim': 100, 'layer': Affine_layer}
+    layers_bn2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': BatchNorm_layer}
     layers4 = {'input_dim': 100, 'output_dim': 100, 'layer': ReLU_layer}
+    layers_dp2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': Dropout_layer}
     layers.append(layers1)
-    layers.append(layers_bn)
+    layers.append(layers_bn1)
     layers.append(layers2)
+    layers.append(layers_dp1)
     layers.append(layers3)
+    layers.append(layers_bn2)
     layers.append(layers4)
+    layers.append(layers_dp2)
 
     model = Neuron_network(layers, 10)
     for i in range(7000):
@@ -42,4 +48,4 @@ if __name__ == '__main__':
             print i, " ", loss
 
     print 'In predict ', np.sum((model.predict(val_in) == val_labels)) * 1.0 / val_labels.shape[0]
-    print 'In predict ', np.sum((model.predict(train_in) == train_labels)) * 1.0 / train_labels.shape[0]
+    print 'In train ', np.sum((model.predict(train_in) == train_labels)) * 1.0 / train_labels.shape[0]

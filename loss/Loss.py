@@ -37,3 +37,10 @@ class Softmax_loss(Loss):
         dx /= N
         return loss, dx
 
+
+class L2_loss(Loss):
+
+    def loss(self, x, y):
+        loss = np.sum((y - x) ** 2)
+        dx = None
+        return loss, dx

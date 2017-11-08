@@ -31,7 +31,7 @@ class BatchNorm_layer(Layer):
 
         Layer.__init__(self, dim_in, dim_out)
         if dim_out != dim_in:
-            raise ValueError("In relu layer, the input dimension must equals the output dimension!")
+            raise ValueError("In Batch normalization layer, the input dimension must equals the output dimension!")
 
         self.gamma = np.ones(dim_in)
         self.beta = np.zeros(dim_in)
@@ -84,16 +84,38 @@ class BatchNorm_layer(Layer):
 
 class Dropout_layer(Layer):
 
-    def __init__(self):
-        pass
+    def __init__(self, dim_in, dim_out, **kwargs):
+        Layer.__init__(self, dim_in, dim_out)
+        if dim_in != dim_out:
+            raise ValueError("In Dropout layer, the input dimension must equals the output dimension!")
+        self.p = kwargs.get("p", 0.5)
+        if self.p <= 0 or self.p >= 1:
+            raise ValueError("The ratio of dropout must within 0 and 1!")
 
 
     def forward(self, x, **kwargs):
-        pass
+        mode = kwargs.get("mode", "train")
+        if mode == 'train':
+            mask = (np.random.rand(*x.shape) >= self.p) / (1 - self.p)
+            out = mask * x
+            self.cache['mask'] = mask
+        elif mode == 'test':
+            out = x
+        else:
+            raise ValueError("InValid forward dropout mode!")
+        return out
 
 
     def backward(self, dout, **kwargs):
-        pass
+        dx = None
+        mode = kwargs.get("mode", "train")
+        if mode == 'train':
+            dx = dout * self.cache['mask']
+        elif mode == 'test':
+            dx = dout
+        else:
+            raise ValueError("InValid backward dropout mode!")
+        return dx
 
 
     def _update(self):
