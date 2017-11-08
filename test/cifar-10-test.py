@@ -26,9 +26,9 @@ if __name__ == '__main__':
     layers2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': ReLU_layer}
     layers_dp1 = {'input_dim': 1000, 'output_dim': 1000, 'layer': Dropout_layer}
     layers3 = {'input_dim': 1000, 'output_dim': 100, 'layer': Affine_layer}
-    layers_bn2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': BatchNorm_layer}
+    layers_bn2 = {'input_dim': 100, 'output_dim': 100, 'layer': BatchNorm_layer}
     layers4 = {'input_dim': 100, 'output_dim': 100, 'layer': ReLU_layer}
-    layers_dp2 = {'input_dim': 1000, 'output_dim': 1000, 'layer': Dropout_layer}
+    layers_dp2 = {'input_dim': 100, 'output_dim': 100, 'layer': Dropout_layer}
     layers.append(layers1)
     layers.append(layers_bn1)
     layers.append(layers2)
@@ -39,12 +39,12 @@ if __name__ == '__main__':
     layers.append(layers_dp2)
 
     model = Neuron_network(layers, 10)
-    for i in range(7000):
+    for i in range(3000):
         mini_batch_index = np.random.randint(0, 9000, 100)
         mini_batch_in = train_in[mini_batch_index]
         mini_batch_labels = train_labels[mini_batch_index]
         loss = model.train(mini_batch_in, mini_batch_labels)
-        if i % 100 == 0 or i == 1999:
+        if i % 100 == 0 or i == 2999:
             print i, " ", loss
 
     print 'In predict ', np.sum((model.predict(val_in) == val_labels)) * 1.0 / val_labels.shape[0]

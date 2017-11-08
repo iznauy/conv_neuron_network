@@ -42,5 +42,5 @@ class L2_loss(Loss):
 
     def loss(self, x, y):
         loss = np.sum((y - x) ** 2)
-        dx = None
+        dx = np.sum(2 * (x - y))
         return loss, dx
