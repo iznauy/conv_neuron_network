@@ -178,3 +178,26 @@ class ReLU_layer(Layer):
         pass
 
 
+class Weak_ReLU_layer(Layer):
+
+    def __init__(self, dim_in, dim_out, **config):
+        Layer.__init__(self, dim_in, dim_out)
+        if dim_in != dim_out:
+            raise ValueError("In relu layer, the input dimension must equals the output dimension!")
+        self.coefficient = config.get("coefficient", 0.1)
+
+
+    def forward(self, x, **kwargs):
+        self.cache['x'] = x
+        out = np.where(x > 0, x, self.coefficient * x)
+        return out
+
+
+    def backward(self, dout, **kwargs):
+        dx = np.copy(dout)
+        dx = np.where(self.cache['x'] > 0, dx, self.coefficient * dx)
+        return dx
+
+
+    def _update(self):
+        pass
